@@ -1,6 +1,5 @@
-const mysql2 = require('mysql2');
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
-// import {inquirer} from "node_modules";
 const utils = require('util');
 
 // Connect to database
@@ -11,18 +10,95 @@ const db = mysql.createConnection(
         password: 'password',
         database: 'employees_db'
     },
-);
+    );
+    
 
-db.query = utils.promisify(db.query);
+    
+    init = () => {
+        // inquirer prompt
+        // Ask the user what they want to do
+    inquirer.prompt ([
+        {
+            type: "list",
+            message: "What would you like to do?",
+            name: "userChoice",
+            choices: [
+                "View all Departments",
+                "View all Roles",
+                "View all Employees",
+                "Add a Department",
+                "Add a Role",
+                "Add an Employee",
+                "Update an Employee",
+                "Quit"
+            ]
+        }
+    ]) .then((answer)=> {
+        switch(answer.userChoice) {
+            case "View all Departments" :
+              viewDepartments();
+              break;
+            case "View all Roles":
+              viewRoles();
+              break;
+            case "View all Employees":
+              viewEmployees();
+              break;
+            case "Add a Department":
+              addDepartment();
+              break;
+            case "Add a Role":
+              addRole();
+              break;
+            case "Add an Employee":
+              addEmployee();
+              break;
+            case "Update an Employee":
+              updateEmployee();
+              break;
+            
+            default: quitApp();
+              // code block
+          }
+    })
+        // Call the appropriate function based off user input
+}
 
 //  View all departments
-    // SELECT * FROM department
+viewDepartments = () => {
+    db.query('SELECT * FROM department', function (err, results) {
+        if (err){
+            console.error(err)
+        } else {
+        console.log(results);
+        init();
+        }
+      });
+}
 
 // View all roles
-    // SELECT * FROM roles
+viewRoles = () => {
+    db.query('SELECT * FROM roles', function (err, results) {
+        if (err){
+            console.error(err)
+        } else {
+        console.log(results);
+        init();
+        }
+      });
+}
 
 // View all employees
-    // SELECT * FROM employee
+viewEmployees = () => {
+    db.query('SELECT * FROM employee', function (err, results) {
+        if (err){
+            console.error(err)
+        } else {
+        console.log(results);
+        init();
+        }
+      });
+}
 
 // Create a new department
 // prompt the user for the name of the department
@@ -34,21 +110,22 @@ db.query = utils.promisify(db.query);
         // THEN ask the user what they want to do next
 
 // Create a new role
-const createRole = async () => {
+const createRole =  () => {
 // Get the existing departments from the 'department' table
-    const roles = await db.query ("SELECT * FROM roles");
+    const roles =  db.query ("SELECT * FROM roles");
 
     console.table(roles);
     // THEN prompt the user for "title" "salary" and "department" for the role
-    const roleChoices = roles.map( role => ({
-        name: role.title,
-        value: role.id
-    }) )
+
+    // const roleChoices = roles.map( role => ({
+    //     name: role.title,
+    //     value: role.id
+    // }) )
     
     console.log(roles);
     console.log(roleChoices);
     
-    const answers = await inquirer.prompt([
+    const answers =  inquirer.prompt([
         // THEN run the query
         {
             message: "",
@@ -57,7 +134,7 @@ const createRole = async () => {
         }
     ]);
 
-    await db.query(
+     db.query(
             "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
             [answers.title, answers.salary, answers.department_id]
     );
@@ -70,4 +147,4 @@ const createRole = async () => {
 
 // QUIT Node App
 
-createRole();
+init();
