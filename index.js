@@ -70,7 +70,7 @@ viewDepartments = () => {
         if (err){
             console.error(err)
         } else {
-        console.log(results);
+        console.table(results);
         init();
         }
       });
@@ -82,7 +82,7 @@ viewRoles = () => {
         if (err){
             console.error(err)
         } else {
-        console.log(results);
+        console.table(results);
         init();
         }
       });
@@ -94,57 +94,102 @@ viewEmployees = () => {
         if (err){
             console.error(err)
         } else {
-        console.log(results);
+        console.table(results);
         init();
         }
       });
 }
 
 // Create a new department
-// prompt the user for the name of the department
+addDepartment = () => {
+    inquirer.prompt ([
+        {
+            type: "input",
+            message: "What is the name of Department?",
+            name: "departmentName"
+        }
+    ]) .then((answer) => {
 
-    // THEN Run the query
-    // INSERT INTO department (name)
-    // VALUES (Sales);
 
-        // THEN ask the user what they want to do next
+        db.query(`INSERT INTO department (name) VALUES (?)`, answer.departmentName, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.table(result);
+            init();
+          });
+          
+    })
+}
 
 // Create a new role
-const createRole =  () => {
-// Get the existing departments from the 'department' table
-    const roles =  db.query ("SELECT * FROM roles");
-
-    console.table(roles);
-    // THEN prompt the user for "title" "salary" and "department" for the role
-
-    // const roleChoices = roles.map( role => ({
-    //     name: role.title,
-    //     value: role.id
-    // }) )
+addRole = () => {
+    db.query('SELECT * FROM department', function (err, results) {
+        if (err){
+            console.error(err)
+        } else {
+        const departmentsArray = results.map(function (department){
+            return {
+                name: department.name,
+                value: department.id
+            }
+        })
+        inquirer.prompt ([
+            {
+                type: "input",
+                message: "What is the name of the role?",
+                name: "roleName"
+            },
+            {
+                type: "input",
+                message: "What is this role's salary?",
+                name: "roleSalary"
+            },
+            {
+                type: "list",
+                message: "Which department will this role be assigned?",
+                name: "roleDepartment",
+                choices: departmentsArray
+            }
+        ]) .then((answer) => {
     
-    console.log(roles);
-    console.log(roleChoices);
     
-    const answers =  inquirer.prompt([
-        // THEN run the query
-        {
-            message: "",
-            name: "",
-            type: "",
+            db.query(`INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`, [answer.roleName, answer.roleSalary, answer.roleDepartment], (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.table(result);
+                init();
+              });
+              
+        })
         }
-    ]);
+        
+      });
 
-     db.query(
-            "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
-            [answers.title, answers.salary, answers.department_id]
-    );
 }
     // THEN ask the user what they want to do next
 
 // ADD Employee
+    // SELECT * FROM role
+    // map results
+        // inquirer
+            // first, last, role, 
+            // Insert into employees, provide input values
+
+            // manager
 
 // UPDATE Employee Role
-
+    // Query SELECT * FROM employee
+    // inquirer
+        // Which employee to update?
+        // Employee list as array options
+        // SELECT * FROM role
+            // roles list = array options
+        
 // QUIT Node App
+function quitApp() {
+    // end connection to database
+}
 
 init();
