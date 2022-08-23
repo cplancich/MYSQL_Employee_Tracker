@@ -12,11 +12,8 @@ const db = mysql.createConnection(
     },
     );
     
-
-    
-    init = () => {
-        // inquirer prompt
-        // Ask the user what they want to do
+    // Start screen
+    init = () => {    
     inquirer.prompt ([
         {
             type: "list",
@@ -35,6 +32,7 @@ const db = mysql.createConnection(
         }
     ]) .then((answer)=> {
         switch(answer.userChoice) {
+            // Call the appropriate function based off user input
             case "View all Departments" :
               viewDepartments();
               break;
@@ -58,10 +56,8 @@ const db = mysql.createConnection(
               break;
             
             default: quitApp();
-              // code block
           }
     })
-        // Call the appropriate function based off user input
 }
 
 //  View all departments
@@ -109,8 +105,6 @@ addDepartment = () => {
             name: "departmentName"
         }
     ]) .then((answer) => {
-
-
         db.query(`INSERT INTO department (name) VALUES (?)`, answer.departmentName, (err, result) => {
             if (err) {
               console.log(err);
@@ -118,7 +112,6 @@ addDepartment = () => {
             console.table(result);
             init();
           });
-          
     })
 }
 
@@ -152,8 +145,6 @@ addRole = () => {
                 choices: departmentsArray
             }
         ]) .then((answer) => {
-    
-    
             db.query(`INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`, [answer.roleName, answer.roleSalary, answer.roleDepartment], (err, result) => {
                 if (err) {
                   console.log(err);
@@ -161,10 +152,8 @@ addRole = () => {
                 console.table(result);
                 init();
               });
-              
         })
         }
-        
       });
 
 }
