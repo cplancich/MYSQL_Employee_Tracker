@@ -1,5 +1,6 @@
 const mysql2 = require('mysql2');
 const inquirer = require('inquirer');
+// import {inquirer} from "node_modules";
 const utils = require('util');
 
 // Connect to database
@@ -35,24 +36,33 @@ db.query = utils.promisify(db.query);
 // Create a new role
 const createRole = async () => {
 // Get the existing departments from the 'department' table
-    const role = await db.query ("SELECT * FROM roles");
+    const roles = await db.query ("SELECT * FROM roles");
+
+    console.table(roles);
     // THEN prompt the user for "title" "salary" and "department" for the role
-    console.log(role);
-
-
-    const answers = inquirer.createPromptModule([
+    const roleChoices = roles.map( role => ({
+        name: role.title,
+        value: role.id
+    }) )
+    
+    console.log(roles);
+    console.log(roleChoices);
+    
+    const answers = await inquirer.prompt([
         // THEN run the query
         {
             message: "",
             name: "",
             type: "",
         }
-    ])
-    // INSERT INTO role (title, salary, department_id)
-    // VALUES (?, ?, ?);
-    
-    // THEN ask the user what they want to do next
+    ]);
+
+    await db.query(
+            "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
+            [answers.title, answers.salary, answers.department_id]
+    );
 }
+    // THEN ask the user what they want to do next
 
 // ADD Employee
 
