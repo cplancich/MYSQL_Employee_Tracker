@@ -144,7 +144,7 @@ addRole = () => {
                 name: "roleDepartment",
                 choices: departmentsArray
             }
-        ]) .then((answer) => {
+            ]) .then((answer) => {
             db.query(`INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?)`, [answer.roleName, answer.roleSalary, answer.roleDepartment], (err, result) => {
                 if (err) {
                   console.log(err);
@@ -152,14 +152,12 @@ addRole = () => {
                 console.table(result);
                 init();
               });
-        })
+            })
         }
       });
-
 }
-    // THEN ask the user what they want to do next
 
-// ADD Employee
+// Create new Employee
     // SELECT * FROM role
     // map results
         // inquirer
@@ -178,7 +176,7 @@ addRole = () => {
         
 // QUIT Node App
 function quitApp() {
-    // end connection to database
+    db.end();
 }
 
 init();
