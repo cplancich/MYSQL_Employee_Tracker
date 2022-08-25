@@ -32,7 +32,7 @@ const db = mysql.createConnection(
         }
     ]) .then((answer)=> {
         switch(answer.userChoice) {
-            // Call the appropriate function based off user input
+            // Call the appropriate function based on user input
             case "View all Departments" :
               viewDepartments();
               break;
@@ -158,22 +158,56 @@ addRole = () => {
 }
 
 // Create new Employee
-    // SELECT * FROM role
-    // map results
-        // inquirer
-            // first, last, role, 
-            // Insert into employees, provide input values
+addEmployee = () => {
+    db.query('SELECT * FROM role', function (err, results) {
+        if (err){
+            console.error(err)
+        } else {
+            // map results
+            const employeesArray = results.map(function(employee){
+                return {
+                    name: employee.name,
+                    value: employee.id
+                }
+            })
+            inquirer.prompt ([
+                {
+                    type: "input",
+                    message: "What is the Employee's first name?",
+                    name: "employeeFirstName"
+                },
+                {
+                    type: "input",
+                    message: "what is the Employee's last name?",
+                    name: "employeeLastName"
+                },
+                {
+                    type: "input",
+                    message: "What is this Employee's role?",
+                    name: "employeeRole"
+                },
+                {
+                    type: "input",
+                    message: "Who is this Employee's manager?",
+                    name: "employeeManager"
+                }
+                // Insert into employees, provide input values
+                
+            ])
+        }
+        })
+}
 
-            // manager
-
-// UPDATE Employee Role
+// Update Employee Role
+updateEmployee = () => {
     // Query SELECT * FROM employee
     // inquirer
         // Which employee to update?
         // Employee list as array options
         // SELECT * FROM role
             // roles list = array options
-        
+}
+
 // QUIT Node App
 function quitApp() {
     db.end();
