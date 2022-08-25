@@ -221,11 +221,23 @@ addEmployee = () => {
 // Update Employee Role
 updateEmployee = () => {
     // Query SELECT * FROM employee
-    // inquirer
-        // Which employee to update?
-        // Employee list as array options
-        // SELECT * FROM role
-            // roles list = array options
+   db.query('SELECT * FROM employee', function (err, results) {
+    if (err){
+        console.error(err)
+    } else {
+        const employeesArray = results.map(function(employee){
+            return {
+                name: employee.first_name,
+                value: employee.id
+            }
+        })
+        // inquirer
+            // Which employee to update?
+            // Employee list as array options
+            // SELECT * FROM role
+                // roles list = array options
+    }
+   })
 }
 
 // QUIT Node App
