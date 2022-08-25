@@ -183,7 +183,7 @@ addEmployee = () => {
                 },
                 {
                     type: "input",
-                    message: "What is this Employee's role?",
+                    message: "What is this Employee's role ID? (integer value)",
                     name: "employeeRole"
                 },
                 {
@@ -192,9 +192,15 @@ addEmployee = () => {
                     name: "employeeManager",
                     choices: employeesArray
                 }
-                // Insert into employees, provide input values
-                
-            ])
+            ]).then((answer) => {
+                db.query(`INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`, [answer.employeeFirstName, answer.employeeLastName, answer.employeeRole, answer.employeeManager], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                    init();
+                })
+            })
         }
         })
 }
