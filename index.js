@@ -159,19 +159,30 @@ addRole = () => {
 
 // Create new Employee
 addEmployee = () => {
-    db.query('SELECT * FROM role', function (err, results) {
+    db.query('SELECT * FROM employee', function (err, results) {
         if (err){
             console.error(err)
         } else {
             // map results
             const employeesArray = results.map(function(employee){
                 return {
-                    name: employee.name,
+                    name: employee.first_name,
                     value: employee.id
-                }
-            })
-            inquirer.prompt ([
-                {
+                } 
+            }) 
+    db.query('SELECT * FROM roles', function (err, results) {
+        if (err){
+            console.error(err)
+        } else {
+            // map results
+            const roleArray = results.map(function(roles){
+                return {
+                    name: roles.title,
+                    value: roles.id
+                } 
+            }) 
+                inquirer.prompt ([
+                    {
                     type: "input",
                     message: "What is the Employee's first name?",
                     name: "employeeFirstName"
@@ -182,9 +193,10 @@ addEmployee = () => {
                     name: "employeeLastName"
                 },
                 {
-                    type: "input",
-                    message: "What is this Employee's role ID? (integer value)",
-                    name: "employeeRole"
+                    type: "list",
+                    message: "What is the Employee's role?",
+                    name: "employeeRole",
+                    choices: roleArray
                 },
                 {
                     type: "list",
@@ -193,7 +205,7 @@ addEmployee = () => {
                     choices: employeesArray
                 }
             ]).then((answer) => {
-                db.query(`INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`, [answer.employeeFirstName, answer.employeeLastName, answer.employeeRole, answer.employeeManager], (err, result) => {
+                db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [answer.employeeFirstName, answer.employeeLastName, answer.employeeRole, answer.employeeManager], (err, result) => {
                     if (err) {
                         console.log(err);
                     }
@@ -203,8 +215,9 @@ addEmployee = () => {
             })
         }
     })
+}
+})
 };
-
 // Update Employee Role
 updateEmployee = () => {
     // Query SELECT * FROM employee
