@@ -187,9 +187,10 @@ addEmployee = () => {
                     name: "employeeRole"
                 },
                 {
-                    type: "input",
+                    type: "list",
                     message: "Who is this Employee's manager?",
-                    name: "employeeManager"
+                    name: "employeeManager",
+                    choices: employeesArray
                 }
                 // Insert into employees, provide input values
                 
