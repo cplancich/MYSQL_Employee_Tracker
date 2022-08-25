@@ -202,8 +202,8 @@ addEmployee = () => {
                 })
             })
         }
-        })
-}
+    })
+};
 
 // Update Employee Role
 updateEmployee = () => {
